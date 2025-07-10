@@ -84,7 +84,7 @@ Click "Add filter" and configure the following filters:
 
 **How to find your GitHub user ID:**
 1. **Curl**: Use `curl https://api.github.com/users/your-username` and look for the `"id"` field
-2. **Your user ID** will be a numeric value (like `12345678`), not your username
+2. **Your user ID** will be a numeric value (like `12345678`), not your username.
 
 **Note:** You can skip this filter if you prefer to keep it simple. The Workflow Name filter alone is sufficient for most use cases.
 
