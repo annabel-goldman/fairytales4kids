@@ -27,9 +27,9 @@ jobs:
       working-directory: testing-suite
       run: npm ci
       
-    - name: Run Cypress tests
+    - name: Run Cypress tests with local server
       working-directory: testing-suite
-      run: npm run test
+      run: npm run test:local
       
     - name: Upload test results
       uses: actions/upload-artifact@v4

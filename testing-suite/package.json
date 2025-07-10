@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "cypress run",
+    "test:local": "start-server-and-test start http://localhost:3000 test",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "start": "npx http-server ../src -p 3000 -c-1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^14.3.3"
+    "cypress": "^14.3.3",
+    "start-server-and-test": "^2.0.3"
   }
 }

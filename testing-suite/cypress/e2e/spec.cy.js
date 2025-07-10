@@ -8,13 +8,14 @@ describe('Fairytales 4 Kids Website', () => {
     cy.title().should('contain', 'Fairytales')
   })
 
-  it('should have navigation elements', () => {
-    cy.get('nav').should('exist')
-    cy.get('a').should('have.length.greaterThan', 0)
+  it('should have a welcome message', () => {
+    cy.get('h1').should('contain', 'Welcome to Fairytales 4 Kids')
+    cy.get('.subtitle').should('contain', 'Where magical stories come to life')
   })
 
-  it('should have story links', () => {
-    cy.get('a[href*="stories"]').should('exist')
+  it('should have a link to stories page', () => {
+    cy.get('a[href*="stories.html"]').should('exist')
+    cy.get('.enter-button').should('contain', 'Read a Good Story')
   })
 
   it('should be responsive', () => {

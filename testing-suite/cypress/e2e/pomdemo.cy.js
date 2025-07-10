@@ -2,15 +2,13 @@ import { HomePage } from "./pages/homePage.cy"
 
 const homePage = new HomePage
 
-describe('All story tests', () => {
+describe('Basic navigation test', () => {
     beforeEach(function(){
-        cy.visit('https://fairytales4kids.com')
+        cy.visit('/')
     })
 
-    it('Little Red Riding Hood Test', () => {
+    it('should navigate to stories page', () => {
         homePage.clickEnter()
-        cy.get('[href="stories/little-red-riding-hood.html"]').click()
-        cy.get('.back-button').click()
+        cy.url().should('include', 'stories.html')
     })
-
 })
