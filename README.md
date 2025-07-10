@@ -2,6 +2,9 @@
 
 This site was created as an experiment in using AI in my development workflow. As a child, I remember asking my parents to read me stories in situations where we didn't have a book readily available, so I thought a site like this could help other families in similar moments. I also just genuinely love fairytales and building things, so this was a one-off passion project that brought together my interests in technology, storytelling, and creativity.
 
+> **Note:**
+> If you only want to use the HTML files locally (for example, to read stories or host the site on your own computer), you do **not** need to set up any API keys, AWS credentials, or follow the CodeBuild/deployment instructions. Just open the files in your browser or use a simple static server.
+
 ## Features
 
 - AI-Generated Content: Uses OpenAI GPT-4 to create and enhance fairy tale stories
@@ -134,3 +137,55 @@ python generate_page.py
 cd scripts/page_generator
 python enhance_page.py
 ```
+
+## AWS CodeBuild GitHub Actions Runner Setup
+
+> **Note:**
+> You only need to follow this section if you want to automate deployment and hosting using AWS CodeBuild and GitHub Actions. If you do not plan to host or deploy the site using AWS, you can skip this section entirely.
+
+### 1. Create GitHub Personal Access Token
+1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate a new token with `repo` and `admin:org` scopes
+3. Save the token securely
+
+### 2. Create IAM Role for CodeBuild
+1. Go to AWS IAM Console
+2. Create a new role with `AWSCodeBuildDeveloperAccess` and S3 permissions
+
+### 3. Create CodeBuild Runner Project
+1. Go to AWS CodeBuild Console
+2. Click "Create build project"
+3. Set Project name: `fairytales-github-actions-runner`
+4. Project type: **Runner project**
+5. Runner provider: `GitHub`
+6. Connect your GitHub account using the token
+7. Runner location: `Repository`
+8. Repository URL: `https://github.com/your-username/fairytales4kids`
+9. Webhook event filter:
+   - Event type: `WORKFLOW_JOB_QUEUED`
+   - Filter: `workflow name` = `Test and Deploy` (or your workflow name)
+10. Environment:
+    - Provisioning Model: `On-demand`
+    - Image: `aws/codebuild/standard:7.0`
+    - Privileged: `Enabled`
+11. Service role: Select the IAM role from step 2
+
+### 4. Add GitHub Secrets
+1. Go to GitHub → Settings → Secrets and variables → Actions
+2. Add:
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+   - `S3_BUCKET_NAME`
+   - `CLOUDFRONT_DISTRIBUTION_ID`
+
+### 5. Configure GitHub Webhook
+1. Go to GitHub → Settings → Webhooks
+2. Click the CodeBuild webhook
+3. Select "Let me select individual events"
+4. Check **Workflow jobs** (uncheck others)
+5. Save
+
+### 6. Test
+1. Make a small change and push to `main`
+2. Check CodeBuild console for a triggered build
+3. Check GitHub Actions for runner activity
