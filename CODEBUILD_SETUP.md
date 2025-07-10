@@ -149,40 +149,6 @@ In your GitHub repository, add the following secrets:
 4. **Check CodeBuild console** to see if a build was triggered
 5. **Check GitHub Actions** to see if your workflow runs on the CodeBuild runner
 
-## Troubleshooting the 400 Error
-
-If you're getting a 400 error from CodeBuild, here are the most common causes and solutions:
-
-### 1. Wrong Event Type
-**Problem:** CodeBuild is receiving `workflow_run` events but expecting `workflow_job` events.
-
-**Solution:** 
-- In your GitHub webhook configuration, make sure you've selected **"Workflow jobs"** event
-- This should send `workflow_job` events instead of `workflow_run` events
-
-### 2. CodeBuild Project Not Configured for Runners
-**Problem:** The CodeBuild project was created as a regular build project instead of a runner project.
-
-**Solution:**
-- Delete the current CodeBuild project
-- Create a new project and make sure to select **"Runner project"** as the project type
-- This enables the special GitHub Actions runner functionality
-
-### 3. Repository Mismatch
-**Problem:** The repository URL in CodeBuild doesn't match your actual repository.
-
-**Solution:**
-- Verify the repository URL in CodeBuild matches: `https://github.com/annabel-goldman/fairytales4kids`
-- Make sure the GitHub connection is properly established
-
-### 4. Webhook Configuration Issues
-**Problem:** The webhook is not properly configured for GitHub Actions runners.
-
-**Solution:**
-- Delete the current webhook in GitHub
-- Recreate it with the correct event types
-- Make sure to select **"Workflow jobs"** as the primary event
-
 ## Key Differences from Traditional Setup
 
 ### What's Different:
