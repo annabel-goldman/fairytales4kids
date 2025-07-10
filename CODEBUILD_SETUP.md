@@ -2,12 +2,6 @@
 
 This guide explains how to set up AWS CodeBuild as a self-hosted GitHub Actions runner for your Fairytales project using the new "Runner project" feature.
 
-## Prerequisites
-
-1. AWS Account with appropriate permissions
-2. GitHub repository with admin access
-3. GitHub Personal Access Token (PAT) with `repo` and `admin:org` scopes
-
 ## Step 1: Create GitHub Personal Access Token
 
 1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
@@ -59,31 +53,16 @@ This guide explains how to set up AWS CodeBuild as a self-hosted GitHub Actions 
 
 **Project configuration:**
 - Project name: `fairytales-github-actions-runner`
-- Project type: **Runner project** (this is the key difference!)
-- Description: `Self-hosted GitHub Actions runner for Fairytales project`
+- Project type: **Runner project** 
 
 **Runner:**
 - Runner provider: `GitHub`
-- Credential: Connect your GitHub account (OAuth recommended)
+- Credential: Connect your GitHub account using the Personal Access Token created in Step 1
 - Runner location: `Repository`
 - Repository URL: `https://github.com/your-username/Fairytales`
 
-**Environment:**
-- Environment image: `Managed image`
-- Operating system: `Ubuntu`
-- Runtime: `Standard`
-- Image: `aws/codebuild/standard:7.0`
-- Privileged: `Enabled` (required for Docker operations)
-- Service role: Select the IAM role created in step 2.1
-
-**Additional configuration:**
-- Manual creation: `Enabled` (allows manual triggering)
-
-### 2.3 Configure Webhook Event Filters (During Project Creation)
-
-**Important:** For Runner projects, webhook configuration is done during the initial project creation, not in the Build triggers tab.
-
-1. **Expand the "Webhook event filter groups" section** in the project configuration
+**Webhook Event Filters (under Runner section):**
+1. **Expand the "Webhook event filter groups" subsection**
 2. **Click "Add filter group"**
 3. **Configure the filter group:**
 
@@ -93,25 +72,40 @@ This guide explains how to set up AWS CodeBuild as a self-hosted GitHub Actions 
 **Add filters:**
 Click "Add filter" and configure the following filters:
 
-**Filter 1: Repository Name**
-- **Condition**: `START_BUILD`
-- **Type**: `repository name`
-- **Pattern**: `your-username/fairytales4kids`
-
-**Filter 2: Organization Name**
-- **Condition**: `START_BUILD`
-- **Type**: `organization name`
-- **Pattern**: `your-username`
-
-**Filter 3: Workflow Name (optional)**
+**Filter 1: Workflow Name (recommended)**
 - **Condition**: `START_BUILD`
 - **Type**: `workflow name`
 - **Pattern**: `Test and Deploy`
 
-**Filter 4: Actor Account ID (optional, for security)**
+**Filter 2: Actor Account ID (optional, for security)**
 - **Condition**: `START_BUILD`
 - **Type**: `actor account id`
 - **Pattern**: Your GitHub user ID
+
+**How to find your GitHub user ID:**
+1. **Curl**: Use `curl https://api.github.com/users/your-username` and look for the `"id"` field
+2. **Your user ID** will be a numeric value (like `12345678`), not your username
+
+**Note:** You can skip this filter if you prefer to keep it simple. The Workflow Name filter alone is sufficient for most use cases.
+
+**Note:** For `WORKFLOW_JOB_QUEUED` events, only `workflow name` and `actor account id` filters are supported. Organization name and repository name filters are not available for this event type.
+
+**Environment:**
+- Provisioning Model: `On-demand`
+- Environment image: `Managed image`
+- Compute: `EC2`
+- Running Mode: `Container`
+- Operating system: `Ubuntu`
+- Runtime: `Standard`
+- Image: `aws/codebuild/standard:7.0`
+- Image version: `Always use the latest image for this runtime version`
+
+**Additional Environment configuration:**
+- Privileged: `Enabled` (required for Docker operations)
+
+
+**Service Role Permissions**
+- Service role: Select the IAM role created in step 2.1
 
 ## Step 3: Update GitHub Secrets
 
@@ -153,11 +147,25 @@ This ensures each job gets a unique runner instance.
 
 ## Webhook Filter Configuration Details
 
-### Available Filter Types:
-- **Repository name**: Ensures builds only trigger for your specific repository
-- **Organization name**: Adds an extra layer of security
-- **Workflow name**: Ensures builds only trigger for your specific workflow
+### Available Filter Types for WORKFLOW_JOB_QUEUED Events:
+- **Workflow name**: Ensures builds only trigger for your specific workflow (recommended)
 - **Actor account ID**: Restricts who can trigger builds (optional but recommended for security)
+
+### Available Filter Types for PUSH Events:
+- **Actor account ID**: Restricts who can trigger builds
+- **Organization name**: Adds an extra layer of security
+- **Repository name**: Ensures builds only trigger for your specific repository (only for organization/global webhooks)
+
+### Available Filter Types for PULL_REQUEST Events:
+- **Actor account ID**: Restricts who can trigger builds
+- **Organization name**: Adds an extra layer of security
+- **Repository name**: Ensures builds only trigger for your specific repository (only for organization/global webhooks)
+
+### Filter Type Options Summary:
+- **Actor account ID**: Available for all event types
+- **Workflow name**: Only available for WORKFLOW_JOB_QUEUED events
+- **Organization name**: Available for PUSH and PULL_REQUEST events
+- **Repository name**: Available for PUSH and PULL_REQUEST events (only for organization/global webhooks)
 
 ### Filter Conditions:
 - **START_BUILD**: Triggers a build when the filter conditions are met
