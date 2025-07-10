@@ -1,0 +1,60 @@
+name: Deploy to S3 and Invalidate CloudFront
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: # Allow manual triggers
+
+env:
+  AWS_REGION: us-east-1 # Change this to your preferred region
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install boto3
+        
+    - name: Generate sitemap
+      run: |
+        cd scripts
+        python generate_sitemap.py
+        
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Deploy to S3
+      run: |
+        cd scripts/page_generator
+        python upload_to_s3.py
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        
+    - name: Invalidate CloudFront cache
+      run: |
+        aws cloudfront create-invalidation \
+          --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+          --paths "/*"
+          
+    - name: Deploy status
+      run: |
+        echo "✅ Deployment completed successfully!"
+        echo "🌐 Website: https://fairytales4kids.com"
+        echo "📅 Deployed at: $(date)" 

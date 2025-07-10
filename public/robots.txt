@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fairytales4kids.com/sitemap.xml 
