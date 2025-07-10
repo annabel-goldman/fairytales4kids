@@ -78,51 +78,42 @@ This guide explains how to set up AWS CodeBuild as a self-hosted GitHub Actions 
 
 **Additional configuration:**
 - Manual creation: `Enabled` (allows manual triggering)
-- Webhook event filters: Configure as needed
 
-## Step 3: Configure Webhook
+### 2.3 Configure Webhook Event Filters (During Project Creation)
 
-### 3.1 Create Webhook in CodeBuild
+**Important:** For Runner projects, webhook configuration is done during the initial project creation, not in the Build triggers tab.
 
-1. In your CodeBuild project, go to the "Build triggers" tab
-2. Click "Create webhook"
-3. Configure the webhook:
+1. **Expand the "Webhook event filter groups" section** in the project configuration
+2. **Click "Add filter group"**
+3. **Configure the filter group:**
 
-**Webhook configuration:**
-- Webhook name: `github-actions-webhook`
-- Source provider: `GitHub`
-- Repository: Select your repository
-- Source version: `main`
+**Event type:**
+- Select `WORKFLOW_JOB_QUEUED` (this is the key event for GitHub Actions runners)
 
-**Event types:**
-- `WORKFLOW_JOB` - This is the key event for GitHub Actions runners
-- `PUSH` - Trigger on code pushes (optional)
-- `PULL_REQUEST_CREATED` - Trigger on PR creation (optional)
-- `PULL_REQUEST_UPDATED` - Trigger on PR updates (optional)
+**Add filters:**
+Click "Add filter" and configure the following filters:
 
-**Webhook filters:**
-- Event: `WORKFLOW_JOB`
-- Base reference: `refs/heads/main`
-- File path: `Fairytales/**` (to trigger only when files in Fairytales directory change)
+**Filter 1: Repository Name**
+- **Condition**: `START_BUILD`
+- **Type**: `repository name`
+- **Pattern**: `your-username/fairytales4kids`
 
-### 3.2 Configure GitHub Webhook
+**Filter 2: Organization Name**
+- **Condition**: `START_BUILD`
+- **Type**: `organization name`
+- **Pattern**: `your-username`
 
-1. Go to your GitHub repository settings
-2. Navigate to Webhooks → Add webhook
-3. Configure the webhook with the values CodeBuild provided:
+**Filter 3: Workflow Name (optional)**
+- **Condition**: `START_BUILD`
+- **Type**: `workflow name`
+- **Pattern**: `Test and Deploy`
 
-**Payload URL:** (Use the URL from CodeBuild)
-**Content type:** `application/json`
-**Secret:** (Use the secret from CodeBuild) 
+**Filter 4: Actor Account ID (optional, for security)**
+- **Condition**: `START_BUILD`
+- **Type**: `actor account id`
+- **Pattern**: Your GitHub user ID
 
-**Events:**
-- Select **"Let me select individual events"**
-- Check the following events:
-  - ✅ **Workflow jobs** (this is the key one for GitHub Actions runners)
-  - ✅ **Pushes** (optional, for general repository updates)
-  - ✅ **Pull requests** (optional, if you want to test on PRs)
-
-## Step 4: Update GitHub Secrets
+## Step 3: Update GitHub Secrets
 
 In your GitHub repository, add the following secrets:
 
@@ -136,18 +127,12 @@ In your GitHub repository, add the following secrets:
 | `S3_BUCKET_NAME` | Your S3 bucket name |
 | `CLOUDFRONT_DISTRIBUTION_ID` | Your CloudFront distribution ID |
 
-## Step 5: Test the Setup
+## Step 4: Test the Setup
 
 1. **Make a small change** to any file in your `Fairytales/` directory
 2. **Commit and push** the changes to the `main` branch
-3. **Check the webhook delivery** in GitHub:
-   - Go to Settings → Webhooks
-   - Click on your webhook
-   - Scroll down to "Recent Deliveries"
-   - You should see a recent delivery with a green checkmark
-
-4. **Check CodeBuild console** to see if a build was triggered
-5. **Check GitHub Actions** to see if your workflow runs on the CodeBuild runner
+3. **Check CodeBuild console** to see if a build was triggered
+4. **Check GitHub Actions** to see if your workflow runs on the CodeBuild runner
 
 ## Key Differences from Traditional Setup
 
@@ -155,8 +140,8 @@ In your GitHub repository, add the following secrets:
 1. **No buildspec.yml required**: CodeBuild automatically handles the runner setup
 2. **Simpler configuration**: Just select "Runner project" type
 3. **Automatic runner management**: CodeBuild handles runner lifecycle automatically
-4. **Built-in webhook support**: Easier webhook configuration
-5. **Workflow job events**: Uses `workflow_job` events instead of `workflow_run`
+4. **Built-in webhook support**: Webhook configuration is done during project creation
+5. **Workflow job events**: Uses `WORKFLOW_JOB_QUEUED` events for GitHub Actions integration
 
 ### Workflow Changes:
 Your workflow now uses the format:
@@ -166,11 +151,28 @@ runs-on: codebuild-fairytales-github-actions-runner-${{ github.run_id }}-${{ git
 
 This ensures each job gets a unique runner instance.
 
+## Webhook Filter Configuration Details
+
+### Available Filter Types:
+- **Repository name**: Ensures builds only trigger for your specific repository
+- **Organization name**: Adds an extra layer of security
+- **Workflow name**: Ensures builds only trigger for your specific workflow
+- **Actor account ID**: Restricts who can trigger builds (optional but recommended for security)
+
+### Filter Conditions:
+- **START_BUILD**: Triggers a build when the filter conditions are met
+- **DO_NOT_START_BUILD**: Prevents a build from starting when the filter conditions are met
+
+### Event Types:
+- **WORKFLOW_JOB_QUEUED**: The main event for GitHub Actions runners
+- **PUSH**: Trigger on code pushes (optional)
+- **PULL_REQUEST_CREATED**: Trigger on PR creation (optional)
+- **PULL_REQUEST_UPDATED**: Trigger on PR updates (optional)
+
 ## Logs and Monitoring
 
 - **CodeBuild logs**: Available in CloudWatch Logs
 - **GitHub Actions logs**: Available in the Actions tab of your repository
-- **Webhook delivery logs**: Available in GitHub repository settings
 - **Runner logs**: Available in CodeBuild build logs
 
 ## Security Considerations
@@ -179,6 +181,7 @@ This ensures each job gets a unique runner instance.
 2. **IAM Roles:** Follow the principle of least privilege
 3. **Webhook Security:** CodeBuild handles webhook authentication automatically
 4. **Secrets Management:** Use AWS Secrets Manager for sensitive data in production
+5. **Filter Configuration:** Use specific filters to restrict which events trigger builds
 
 ## Cost Optimization
 
@@ -202,4 +205,5 @@ After successful setup:
 2. **Automatic Management:** CodeBuild handles runner lifecycle
 3. **Better Integration:** Native GitHub Actions integration
 4. **Easier Maintenance:** Less custom code to maintain
-5. **Built-in Security:** Automatic credential management 
+5. **Built-in Security:** Automatic credential management
+6. **Integrated Webhook Configuration:** Webhook setup is part of the initial project configuration 
