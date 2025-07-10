@@ -116,7 +116,21 @@ In your GitHub repository, add the following secrets:
 | `S3_BUCKET_NAME` | Your S3 bucket name |
 | `CLOUDFRONT_DISTRIBUTION_ID` | Your CloudFront distribution ID |
 
-## Step 4: Test the Setup
+## Step 4: Configure GitHub Webhook
+
+After creating your CodeBuild runner project, you need to configure the GitHub webhook to send the correct events:
+
+1. **Go to your GitHub repository**: `https://github.com/your-username/fairytales4kids/settings/hooks`
+2. **Click on the existing webhook** (created automatically by CodeBuild)
+3. **In the "Which events would you like to trigger this webhook?" section**:
+   - Change from "Just the push event" to **"Let me select individual events"**
+   - **Check** "Workflow jobs" (this sends `WORKFLOW_JOB_QUEUED` events)
+
+**Important**: The webhook must be configured for "Workflow jobs" events, not "Workflow runs" events. This is because:
+- `WORKFLOW_JOB_QUEUED` events tell CodeBuild when to provision a runner for a specific job
+- `workflow_run` events are less specific and won't trigger the runner properly
+
+## Step 5: Test the Setup
 
 1. **Make a small change** to any file in your `Fairytales/` directory
 2. **Commit and push** the changes to the `main` branch
@@ -210,3 +224,40 @@ After successful setup:
 4. **Easier Maintenance:** Less custom code to maintain
 5. **Built-in Security:** Automatic credential management
 6. **Integrated Webhook Configuration:** Webhook setup is part of the initial project configuration 
+
+## Troubleshooting
+
+### Common Issues:
+
+1. **Webhook not triggering builds**: Ensure the webhook is configured for "Workflow jobs" events, not "Workflow runs"
+2. **Builds not starting**: Check that the workflow name filter matches your actual workflow name exactly
+3. **Permission errors**: Verify your IAM role has the necessary permissions
+4. **Runner not connecting**: Ensure the project name in your workflow matches the CodeBuild project name
+
+### Webhook Configuration Issues:
+
+**Problem**: CodeBuild isn't seeing any builds triggered even though GitHub shows successful webhook deliveries.
+
+**Solution**: Check your webhook event configuration:
+- Go to your repository → Settings → Webhooks
+- Click on the webhook
+- Ensure "Workflow jobs" is checked (not "Workflow runs")
+- The webhook payload should show `X-GitHub-Event: workflow_job` in the headers
+
+**Why this matters**: 
+- `workflow_run` events are sent when a workflow starts/completes
+- `workflow_job` events are sent when individual jobs are queued
+- CodeBuild runners need `workflow_job` events to know when to provision a runner for a specific job
+
+### Verification Steps:
+
+1. **Check webhook delivery logs**: In GitHub, go to Settings → Webhooks → Click webhook → Recent Deliveries
+2. **Look for the event type**: The request headers should show `X-GitHub-Event: workflow_job`
+3. **Check CodeBuild console**: Look for builds being triggered in the AWS CodeBuild console
+4. **Verify workflow name**: Ensure the workflow name in your filter matches exactly (case-sensitive)
+
+### If Your Workflow Job is Hanging:
+
+If your workflow job is hanging on GitHub, see:
+- [Troubleshoot the webhook](https://docs.aws.amazon.com/codebuild/latest/userguide/webhook-troubleshooting.html)
+- [Using custom labels to route jobs](https://docs.aws.amazon.com/codebuild/latest/userguide/github-actions-runner-label-overrides.html)
