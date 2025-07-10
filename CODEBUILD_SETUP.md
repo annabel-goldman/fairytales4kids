@@ -80,9 +80,9 @@ This guide explains how to set up AWS CodeBuild as a self-hosted GitHub Actions 
 - Manual creation: `Enabled` (allows manual triggering)
 - Webhook event filters: Configure as needed
 
-## Step 3: Configure Webhook (Optional)
+## Step 3: Configure Webhook
 
-If you want automatic triggering on repository events:
+### 3.1 Create Webhook in CodeBuild
 
 1. In your CodeBuild project, go to the "Build triggers" tab
 2. Click "Create webhook"
@@ -95,14 +95,32 @@ If you want automatic triggering on repository events:
 - Source version: `main`
 
 **Event types:**
-- `PUSH` - Trigger on code pushes
-- `PULL_REQUEST_CREATED` - Trigger on PR creation
-- `PULL_REQUEST_UPDATED` - Trigger on PR updates
+- `WORKFLOW_JOB` - This is the key event for GitHub Actions runners
+- `PUSH` - Trigger on code pushes (optional)
+- `PULL_REQUEST_CREATED` - Trigger on PR creation (optional)
+- `PULL_REQUEST_UPDATED` - Trigger on PR updates (optional)
 
 **Webhook filters:**
-- Event: `PUSH`
+- Event: `WORKFLOW_JOB`
 - Base reference: `refs/heads/main`
 - File path: `Fairytales/**` (to trigger only when files in Fairytales directory change)
+
+### 3.2 Configure GitHub Webhook
+
+1. Go to your GitHub repository settings
+2. Navigate to Webhooks → Add webhook
+3. Configure the webhook with the values CodeBuild provided:
+
+**Payload URL:** (Use the URL from CodeBuild)
+**Content type:** `application/json`
+**Secret:** (Use the secret from CodeBuild)
+
+**Events:**
+- Select **"Let me select individual events"**
+- Check the following events:
+  - ✅ **Workflow jobs** (this is the key one for GitHub Actions runners)
+  - ✅ **Pushes** (optional, for general repository updates)
+  - ✅ **Pull requests** (optional, if you want to test on PRs)
 
 ## Step 4: Update GitHub Secrets
 
@@ -120,11 +138,50 @@ In your GitHub repository, add the following secrets:
 
 ## Step 5: Test the Setup
 
-1. Make a small change to a file in the `Fairytales/` directory
-2. Push the changes to the `main` branch
-3. Check the CodeBuild console to see if the build is triggered
-4. Monitor the build logs to ensure the GitHub Actions runner starts correctly
-5. Check your GitHub Actions tab to see if the workflow runs on the self-hosted runner
+1. **Make a small change** to any file in your `Fairytales/` directory
+2. **Commit and push** the changes to the `main` branch
+3. **Check the webhook delivery** in GitHub:
+   - Go to Settings → Webhooks
+   - Click on your webhook
+   - Scroll down to "Recent Deliveries"
+   - You should see a recent delivery with a green checkmark
+
+4. **Check CodeBuild console** to see if a build was triggered
+5. **Check GitHub Actions** to see if your workflow runs on the CodeBuild runner
+
+## Troubleshooting the 400 Error
+
+If you're getting a 400 error from CodeBuild, here are the most common causes and solutions:
+
+### 1. Wrong Event Type
+**Problem:** CodeBuild is receiving `workflow_run` events but expecting `workflow_job` events.
+
+**Solution:** 
+- In your GitHub webhook configuration, make sure you've selected **"Workflow jobs"** event
+- This should send `workflow_job` events instead of `workflow_run` events
+
+### 2. CodeBuild Project Not Configured for Runners
+**Problem:** The CodeBuild project was created as a regular build project instead of a runner project.
+
+**Solution:**
+- Delete the current CodeBuild project
+- Create a new project and make sure to select **"Runner project"** as the project type
+- This enables the special GitHub Actions runner functionality
+
+### 3. Repository Mismatch
+**Problem:** The repository URL in CodeBuild doesn't match your actual repository.
+
+**Solution:**
+- Verify the repository URL in CodeBuild matches: `https://github.com/annabel-goldman/fairytales4kids`
+- Make sure the GitHub connection is properly established
+
+### 4. Webhook Configuration Issues
+**Problem:** The webhook is not properly configured for GitHub Actions runners.
+
+**Solution:**
+- Delete the current webhook in GitHub
+- Recreate it with the correct event types
+- Make sure to select **"Workflow jobs"** as the primary event
 
 ## Key Differences from Traditional Setup
 
@@ -133,6 +190,7 @@ In your GitHub repository, add the following secrets:
 2. **Simpler configuration**: Just select "Runner project" type
 3. **Automatic runner management**: CodeBuild handles runner lifecycle automatically
 4. **Built-in webhook support**: Easier webhook configuration
+5. **Workflow job events**: Uses `workflow_job` events instead of `workflow_run`
 
 ### Workflow Changes:
 Your workflow now uses the format:
@@ -142,30 +200,12 @@ runs-on: codebuild-fairytales-github-actions-runner-${{ github.run_id }}-${{ git
 
 This ensures each job gets a unique runner instance.
 
-## Troubleshooting
+## Logs and Monitoring
 
-### Common Issues:
-
-1. **Runner not starting:**
-   - Check GitHub connection in CodeBuild project
-   - Verify repository URL is correct
-   - Check CodeBuild logs for runner installation errors
-
-2. **Webhook not triggering:**
-   - Verify webhook URL is correct
-   - Check webhook filters match your file paths
-   - Ensure webhook is active in GitHub
-
-3. **Permission errors:**
-   - Verify IAM role has necessary permissions
-   - Check GitHub token scopes
-   - Ensure CodeBuild service role can access required resources
-
-### Logs and Monitoring:
-
-- CodeBuild logs: Available in CloudWatch Logs
-- GitHub Actions logs: Available in the Actions tab of your repository
-- Runner logs: Available in CodeBuild build logs
+- **CodeBuild logs**: Available in CloudWatch Logs
+- **GitHub Actions logs**: Available in the Actions tab of your repository
+- **Webhook delivery logs**: Available in GitHub repository settings
+- **Runner logs**: Available in CodeBuild build logs
 
 ## Security Considerations
 
