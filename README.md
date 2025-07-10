@@ -2,7 +2,7 @@
 
 A beautiful collection of classic fairy tales for children, featuring AI-generated content and modern web design.
 
-## 🚀 Features
+## Features
 
 - **AI-Generated Content**: Uses OpenAI GPT-4 to create and enhance fairy tale stories
 - **AI-Generated Images**: Uses DALL-E 3 to create custom illustrations for each story
@@ -11,14 +11,14 @@ A beautiful collection of classic fairy tales for children, featuring AI-generat
 - **Automated Deployment**: GitHub Actions for automatic deployment to AWS S3 and CloudFront
 - **Testing Suite**: Cypress-based end-to-end testing
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.11+
 - Node.js 16+ (for testing suite)
 - AWS Account with S3 bucket and CloudFront distribution
 - OpenAI API key
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### 1. Clone the Repository
 
@@ -64,7 +64,7 @@ cd testing-suite
 npm install
 ```
 
-## 🎯 Usage
+## Usage
 
 ### Generate New Story
 
@@ -94,7 +94,7 @@ cd testing-suite
 npm run test
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Fairytales/
@@ -118,7 +118,7 @@ testing-suite/
 └── cypress.config.js      # Cypress configuration
 ```
 
-## 🔒 Security
+## Security
 
 ### Environment Variables
 
@@ -139,7 +139,7 @@ The following files are excluded from version control:
 - AWS credentials
 - Log files and temporary files
 
-## 🚀 Deployment
+## Deployment
 
 ### Automated Deployment
 
@@ -164,7 +164,7 @@ cd page_generator
 python upload_to_s3.py
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Running Tests
 
@@ -180,7 +180,7 @@ npm run cypress:open  # Open Cypress UI
 - **Page Object Model**: Organized test structure
 - **Fixtures**: Test data management
 
-## 📝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -188,15 +188,15 @@ npm run cypress:open  # Open Cypress UI
 4. Add tests if applicable
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
-## 🤝 Support
+## Support
 
 For questions or support, please open an issue on GitHub.
 
-## 🔄 Updates
+## Updates
 
 - **Content Generation**: AI-powered story creation and enhancement
 - **Image Generation**: Custom illustrations for each story

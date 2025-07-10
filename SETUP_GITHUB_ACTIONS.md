@@ -2,7 +2,7 @@
 
 This guide will help you set up automatic deployment to S3 and CloudFront cache invalidation when you push code to GitHub.
 
-## 🚀 What This Does
+## What This Does
 
 When you push code to the `main` or `master` branch, GitHub Actions will:
 1. Generate an updated sitemap
@@ -10,13 +10,13 @@ When you push code to the `main` or `master` branch, GitHub Actions will:
 3. Invalidate CloudFront cache to serve new content
 4. Notify you of deployment status
 
-## 📋 Prerequisites
+## Prerequisites
 
 - GitHub repository with your code
 - AWS account with S3 bucket and CloudFront distribution
 - AWS credentials with appropriate permissions
 
-## 🔧 Setup Steps
+## Setup Steps
 
 ### 1. Get Your AWS Information
 
@@ -84,7 +84,7 @@ Your AWS user needs these permissions:
 3. Watch the deployment workflow run
 4. Check your website for updates
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues:
 
@@ -100,13 +100,13 @@ You can manually trigger the workflow:
 2. Select "Deploy to S3 and Invalidate CloudFront"
 3. Click "Run workflow"
 
-## 📊 Monitoring
+## Monitoring
 
 - Check GitHub Actions tab for deployment status
 - Monitor CloudFront invalidation status in AWS Console
 - Verify website updates at https://fairytales4kids.com
 
-## 🔄 Workflow Customization
+## Workflow Customization
 
 The workflow file is at `.github/workflows/deploy.yml`. You can customize:
 - Trigger branches
@@ -115,7 +115,7 @@ The workflow file is at `.github/workflows/deploy.yml`. You can customize:
 - Deployment steps
 - Notifications
 
-## 💡 Tips
+## Tips
 
 - Keep your AWS credentials secure
 - Monitor CloudFront invalidation costs
