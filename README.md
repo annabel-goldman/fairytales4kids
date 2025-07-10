@@ -1,15 +1,16 @@
 # Fairytales 4 Kids
 
-A beautiful collection of classic fairy tales for children, featuring AI-generated content and modern web design.
+This site was created as an experiment in using AI in my development workflow. As a child, I remember asking my parents to read me stories in situations where we didn't have a book readily available, so I thought a site like this could help other families in similar moments. I also just genuinely love fairytales and building things, so this was a one-off passion project that brought together my interests in technology, storytelling, and creativity.
 
 ## Features
 
-- **AI-Generated Content**: Uses OpenAI GPT-4 to create and enhance fairy tale stories
-- **AI-Generated Images**: Uses DALL-E 3 to create custom illustrations for each story
-- **Modern Web Design**: Responsive design with beautiful animations and typography
-- **SEO Optimized**: Proper meta tags, sitemap, and structured content
-- **Automated Deployment**: GitHub Actions for automatic deployment to AWS S3 and CloudFront
-- **Testing Suite**: Cypress-based end-to-end testing
+- AI-Generated Content: Uses OpenAI GPT-4 to create and enhance fairy tale stories
+- AI-Generated Images: Uses DALL-E 3 to create custom illustrations for each story
+- Modern Web Design: Responsive design with beautiful animations and typography
+- SEO Optimized: Proper meta tags, sitemap, and structured content
+- Automated Deployment: GitHub Actions for automatic deployment to AWS S3 and CloudFront
+- Comprehensive Testing: Cypress-based end-to-end testing with CI/CD integration
+- Security: Proper secret management and environment variables
 
 ## Prerequisites
 
@@ -18,29 +19,19 @@ A beautiful collection of classic fairy tales for children, featuring AI-generat
 - AWS Account with S3 bucket and CloudFront distribution
 - OpenAI API key
 
-## Setup Instructions
+## Quick Setup
 
-### 1. Clone the Repository
+### 1. Clone and Setup
 
 ```bash
 git clone https://github.com/annabel-goldman/fairytales4kids.git
 cd Fairytales
+
+# Run automated setup
+python setup.py
 ```
 
-### 2. Create and Activate Virtual Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Environment Configuration
+### 2. Environment Configuration
 
 Create a `.env` file in the root directory:
 
@@ -57,12 +48,76 @@ GOOGLE_ADSENSE_CLIENT_ID=ca-pub-3709806584351963
 WEBSITE_URL=https://fairytales4kids.com
 ```
 
-### 5. Setup Testing Suite
+### 3. Install Dependencies
 
 ```bash
+# Python dependencies
+pip install -r requirements.txt
+
+# Testing suite dependencies
 cd testing-suite
 npm install
+cd ..
 ```
+
+## Project Structure
+
+```
+Fairytales/
+├── src/                   # Source files
+│   ├── assets/            # Images and static assets
+│   │   ├── images/        # Story illustrations (AI-generated)
+│   │   └── logo.png       # Site logo
+│   ├── pages/             # HTML pages
+│   │   ├── stories.html   # Main stories listing page
+│   │   └── stories/       # Individual story pages (18 stories)
+│   └── styles/            # CSS stylesheets
+│       ├── styles.css     # Global styles
+│       ├── home.css       # Homepage styles
+│       └── story.css      # Story page styles
+├── scripts/               # Python utility scripts
+│   ├── page_generator/    # Content generation scripts
+│   │   ├── generate_page.py
+│   │   ├── enhance_page.py
+│   │   └── upload_to_s3.py
+│   ├── generate_sitemap.py
+│   └── watch_pages.py
+├── public/                # Public assets
+│   ├── robots.txt         # Search engine instructions
+│   └── sitemap.xml        # Generated sitemap
+├── testing-suite/         # Cypress testing suite
+│   ├── cypress/           # Test files
+│   ├── package.json       # Node.js dependencies
+│   └── cypress.config.js  # Cypress configuration
+├── .github/workflows/     # GitHub Actions workflows
+│   └── test-and-deploy.yml # Single workflow for testing and deployment
+├── config.py              # Configuration management
+├── requirements.txt       # Python dependencies
+├── setup.py              # Automated setup script
+└── .env                  # Environment variables (not tracked)
+```
+
+## Available Stories
+
+The project includes 18 classic fairy tales:
+- Cinderella
+- Snow White
+- Sleeping Beauty
+- Rapunzel
+- Little Red Riding Hood
+- Jack and the Beanstalk
+- Three Little Pigs
+- Goldilocks
+- Hansel and Gretel
+- Frog Prince
+- Princess and the Pea
+- Puss in Boots
+- Rose Red
+- Humpty Dumpty
+- Jack Frost
+- Mother Goose
+- The Ugly Duckling
+- Three Blind Mice
 
 ## Usage
 
@@ -79,126 +134,3 @@ python generate_page.py
 cd scripts/page_generator
 python enhance_page.py
 ```
-
-### Upload to S3
-
-```bash
-cd scripts/page_generator
-python upload_to_s3.py
-```
-
-### Run Tests
-
-```bash
-cd testing-suite
-npm run test
-```
-
-## Project Structure
-
-```
-Fairytales/
-├── src/                    # Source files
-│   ├── assets/            # Images and static assets
-│   ├── pages/             # HTML pages
-│   │   └── stories/       # Individual story pages
-│   └── styles/            # CSS stylesheets
-├── scripts/               # Python utility scripts
-│   ├── page_generator/    # Content generation scripts
-│   ├── generate_sitemap.py
-│   └── watch_pages.py
-├── public/                # Public assets
-├── config.py              # Configuration management
-├── requirements.txt       # Python dependencies
-└── .env                   # Environment variables (not tracked)
-
-testing-suite/
-├── cypress/               # Cypress test files
-├── package.json           # Node.js dependencies
-└── cypress.config.js      # Cypress configuration
-```
-
-## Security
-
-### Environment Variables
-
-All sensitive information is managed through environment variables:
-
-- **API Keys**: OpenAI API key for content generation
-- **AWS Credentials**: Access keys for S3 deployment
-- **Configuration**: Website URLs and other configurable values
-
-### Gitignore
-
-The following files are excluded from version control:
-
-- `.env` files
-- Virtual environments (`venv/`, `.venv/`)
-- Python cache files (`__pycache__/`)
-- Node modules (`node_modules/`)
-- AWS credentials
-- Log files and temporary files
-
-## Deployment
-
-### Automated Deployment
-
-The project uses GitHub Actions for automated deployment:
-
-1. Push code to `main` or `master` branch
-2. GitHub Actions automatically:
-   - Generates updated sitemap
-   - Uploads files to S3
-   - Invalidates CloudFront cache
-   - Sends deployment notifications
-
-### Manual Deployment
-
-```bash
-# Generate sitemap
-cd scripts
-python generate_sitemap.py
-
-# Upload to S3
-cd page_generator
-python upload_to_s3.py
-```
-
-## Testing
-
-### Running Tests
-
-```bash
-cd testing-suite
-npm run test          # Run all tests
-npm run cypress:open  # Open Cypress UI
-```
-
-### Test Structure
-
-- **E2E Tests**: End-to-end testing of website functionality
-- **Page Object Model**: Organized test structure
-- **Fixtures**: Test data management
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
-
-## Support
-
-For questions or support, please open an issue on GitHub.
-
-## Updates
-
-- **Content Generation**: AI-powered story creation and enhancement
-- **Image Generation**: Custom illustrations for each story
-- **Deployment**: Automated CI/CD pipeline
-- **Security**: Proper secret management and environment variables 
