@@ -27,17 +27,15 @@ jobs:
       working-directory: testing-suite
       run: npm ci
       
-    - name: Run Cypress tests with local server
+    - name: Start local server
       working-directory: testing-suite
-      run: npm run test:local
+      run: |
+        npm run start &
+        sleep 5
       
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: cypress-results
-        path: testing-suite/cypress/videos/
-        retention-days: 7
+    - name: Run Cypress tests
+      working-directory: testing-suite
+      run: npm run test
 
   deploy:
     runs-on: ubuntu-latest
