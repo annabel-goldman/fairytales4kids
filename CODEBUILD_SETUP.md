@@ -77,11 +77,6 @@ Click "Add filter" and configure the following filters:
 - **Type**: `workflow name`
 - **Pattern**: `Test and Deploy`
 
-**Filter 2: Actor Account ID (optional, for security)**
-- **Condition**: `START_BUILD`
-- **Type**: `actor account id`
-- **Pattern**: Your GitHub user ID
-
 **How to find your GitHub user ID:**
 1. **Curl**: Use `curl https://api.github.com/users/your-username` and look for the `"id"` field
 2. **Your user ID** will be a numeric value (like `12345678`), not your username.
