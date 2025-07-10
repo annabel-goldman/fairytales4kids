@@ -113,7 +113,7 @@ This guide explains how to set up AWS CodeBuild as a self-hosted GitHub Actions 
 
 **Payload URL:** (Use the URL from CodeBuild)
 **Content type:** `application/json`
-**Secret:** (Use the secret from CodeBuild)
+**Secret:** (Use the secret from CodeBuild) 
 
 **Events:**
 - Select **"Let me select individual events"**
