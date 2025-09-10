@@ -1,24 +1,69 @@
 # Fairytales 4 Kids
 
-This site was created as an experiment in using AI in my development workflow. As a child, I remember asking my parents to read me stories in situations where we didn't have a book readily available, so I thought a site like this could help other families in similar moments. I also just genuinely love fairytales and building things, so this was a one-off passion project that brought together my interests in technology, storytelling, and creativity.
+Note: This site was created as an experiment in using AI in my development workflow, and using AI for automated content generation. 
+
+As a child, I remember asking my parents to read me stories in situations where we didn't have a book readily available, and I remember that usually my dad would find one online. so I thought a site like this could help other families in similar moments. I also just genuinely love fairytales and building things, so this was a fun one-off project.
 
 > **Note:**
 > If you only want to use the HTML files locally (for example, to read stories or host the site on your own computer), you do **not** need to set up any API keys, AWS credentials, or follow the CodeBuild/deployment instructions. Just open the files in your browser or use a simple static server.
 
-## Features
+## AI Story Generation
 
-- AI-Generated Content: Uses OpenAI GPT-4 to create and enhance fairy tale stories
-- AI-Generated Images: Uses DALL-E 3 to create custom illustrations for each story
-- Modern Web Design: Responsive design with beautiful animations and typography
-- SEO Optimized: Proper meta tags, sitemap, and structured content
-- Automated Deployment: GitHub Actions for automatic deployment to AWS S3 and CloudFront
-- Security: Proper secret management and environment variables
+
+### Generate New Stories
+
+Create entirely new fairy tale stories with AI-generated content and illustrations:
+
+```bash
+cd scripts/page_generator
+python generate_page.py
+```
+
+This script will:
+- Generate a complete fairy tale story using GPT-4
+- Create a custom illustration using DALL-E 3
+- Build a complete HTML page with proper styling
+- Add the story to your site's navigation
+
+### Enhance Existing Stories
+
+Improve existing stories with more detailed content, formatting, or new illustrations. (Honestly, I think this script could use better promting. As is, running this script often results in stories with overly complex language for kids):
+
+```bash
+cd scripts/page_generator
+python enhance_page.py
+```
+
+
+
+```
+
+### Deploy to AWS
+
+Upload your site to AWS S3 for web hosting:
+
+```bash
+cd scripts/page_generator
+python upload_to_s3.py
+```
+
+### Generate Sitemap
+
+Create an XML sitemap for search engine optimization:
+
+```bash
+cd scripts
+python generate_sitemap.py
+```
+
 
 ## Prerequisites
 
-- Python 3.11+
-- AWS Account with S3 bucket and CloudFront distribution
-- OpenAI API key
+- Python 3.11+ (for content generation)
+- AWS Account with S3 bucket and CloudFront distribution (for deployment)
+- OpenAI API key (for content generation)
+
+> **Note:** For local viewing only, you don't need any of these prerequisites!
 
 ## Quick Setup
 
@@ -57,123 +102,60 @@ pip install -r requirements.txt
 
 ```
 
-## Project Structure
+## Running the Project Locally
 
-```
-Fairytales/
-├── src/                   # Source files
-│   ├── assets/            # Images and static assets
-│   │   ├── images/        # Story illustrations (AI-generated)
-│   │   └── logo.png       # Site logo
-│   ├── pages/             # HTML pages
-│   │   ├── stories.html   # Main stories listing page
-│   │   └── stories/       # Individual story pages (18 stories)
-│   └── styles/            # CSS stylesheets
-│       ├── styles.css     # Global styles
-│       ├── home.css       # Homepage styles
-│       └── story.css      # Story page styles
-├── scripts/               # Python utility scripts
-│   ├── page_generator/    # Content generation scripts
-│   │   ├── generate_page.py
-│   │   ├── enhance_page.py
-│   │   └── upload_to_s3.py
-│   ├── generate_sitemap.py
-│   └── watch_pages.py
-├── public/                # Public assets
-│   ├── robots.txt         # Search engine instructions
-│   └── sitemap.xml        # Generated sitemap
-├── config.py              # Configuration management
-├── requirements.txt       # Python dependencies
-├── setup.py              # Automated setup script
-└── .env                  # Environment variables (not tracked)
-```
-
-## Available Stories
-
-The project includes 18 classic fairy tales:
-- Cinderella
-- Snow White
-- Sleeping Beauty
-- Rapunzel
-- Little Red Riding Hood
-- Jack and the Beanstalk
-- Three Little Pigs
-- Goldilocks
-- Hansel and Gretel
-- Frog Prince
-- Princess and the Pea
-- Puss in Boots
-- Rose Red
-- Humpty Dumpty
-- Jack Frost
-- Mother Goose
-- The Ugly Duckling
-- Three Blind Mice
-
-## Usage
-
-### Generate New Story
+### Option 1: Direct File Opening
+The simplest way to view the site:
 
 ```bash
-cd scripts/page_generator
-python generate_page.py
+# Navigate to the source directory
+cd src
+
+# Open the homepage in your browser
+open index.html  # macOS
+# or
+start index.html  # Windows
+# or
+xdg-open index.html  # Linux
 ```
 
-### Enhance Existing Story
+### Option 2: Local Web Server (Recommended)
+For better functionality, use a local server:
 
 ```bash
-cd scripts/page_generator
-python enhance_page.py
+# Using Python (recommended)
+cd src
+python -m http.server 8000
+# Then visit http://localhost:8000
+
+# Using Node.js (if you have it installed)
+cd src
+npx serve .
+# Then visit the URL shown in terminal
 ```
 
-## AWS CodeBuild GitHub Actions Runner Setup
+## Automated Deployment Setup
 
 > **Note:**
-> You only need to follow this section if you want to automate deployment and hosting using AWS CodeBuild and GitHub Actions. If you do not plan to host or deploy the site using AWS, you can skip this section entirely.
+> The deployment setup is optional. The site works perfectly for local viewing without any AWS setup.
 
-### 1. Create GitHub Personal Access Token
-1. Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
-2. Generate a new token with `repo` and `admin:org` scopes
-3. Save the token securely
+### 1. Configure GitHub Secrets
+For automatic deployment to AWS, add these secrets to your GitHub repository:
 
-### 2. Create IAM Role for CodeBuild
-1. Go to AWS IAM Console
-2. Create a new role with `AWSCodeBuildDeveloperAccess` and S3 permissions
+1. Go to GitHub → Your Repository → Settings → Secrets and variables → Actions
+2. Add the following secrets:
+   - `AWS_ACCESS_KEY_ID` - Your AWS access key
+   - `AWS_SECRET_ACCESS_KEY` - Your AWS secret key
+   - `S3_BUCKET_NAME` - Your S3 bucket name
+   - `CLOUDFRONT_DISTRIBUTION_ID` - Your CloudFront distribution ID
 
-### 3. Create CodeBuild Runner Project
-1. Go to AWS CodeBuild Console
-2. Click "Create build project"
-3. Set Project name: `fairytales-github-actions-runner`
-4. Project type: **Runner project**
-5. Runner provider: `GitHub`
-6. Connect your GitHub account using the token
-7. Runner location: `Repository`
-8. Repository URL: `https://github.com/your-username/fairytales4kids`
-9. Webhook event filter:
-   - Event type: `WORKFLOW_JOB_QUEUED`
-   - Filter: `workflow name` = `Deploy` (or your workflow name)
-10. Environment:
-    - Provisioning Model: `On-demand`
-    - Image: `aws/codebuild/standard:7.0`
-    - Privileged: `Enabled`
-11. Service role: Select the IAM role from step 2
+### 2. AWS Setup Requirements
+- S3 bucket configured for static website hosting
+- CloudFront distribution pointing to your S3 bucket
+- IAM user with permissions for S3 and CloudFront
 
-### 4. Add GitHub Secrets
-1. Go to GitHub → Settings → Secrets and variables → Actions
-2. Add:
-   - `AWS_ACCESS_KEY_ID`
-   - `AWS_SECRET_ACCESS_KEY`
-   - `S3_BUCKET_NAME`
-   - `CLOUDFRONT_DISTRIBUTION_ID`
-
-### 5. Configure GitHub Webhook
-1. Go to GitHub → Settings → Webhooks
-2. Click the CodeBuild webhook
-3. Select "Let me select individual events"
-4. Check **Workflow jobs** (uncheck others)
-5. Save
-
-### 6. Test
-1. Make a small change and push to `main`
-2. Check CodeBuild console for a triggered build
-3. Check GitHub Actions for runner activity
+### 3. Automatic Deployment
+Once configured, the site automatically deploys when you:
+1. Push changes to the `main` branch
+2. The GitHub Actions workflow runs on GitHub-hosted runners
+3. Files are uploaded to S3 and CloudFront cache is invalidated
