@@ -126,7 +126,6 @@ def main():
         print("\nNext steps:")
         print("1. Activate your virtual environment: source venv/bin/activate")
         print("2. Generate a story: cd scripts/page_generator && python generate_page.py")
-        print("3. Run tests: cd testing-suite && npm run test")
     else:
         print("⚠️  Setup incomplete. Please address the issues above.")
         print("\nFor help, see the README.md file")

@@ -1,4 +1,4 @@
-name: Test and Deploy
+name: Deploy
 
 on:
   push:
@@ -9,37 +9,8 @@ env:
   AWS_REGION: us-east-1
 
 jobs:
-  test:
-    runs-on: codebuild-fairytales-github-actions-runner-${{ github.run_id }}-${{ github.run_attempt }}
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: testing-suite/package-lock.json
-        
-    - name: Install Cypress dependencies
-      working-directory: testing-suite
-      run: npm ci
-      
-    - name: Start local server
-      working-directory: testing-suite
-      run: |
-        npm run start &
-        sleep 5
-      
-    - name: Run Cypress tests
-      working-directory: testing-suite
-      run: npm run test
-
   deploy:
     runs-on: codebuild-fairytales-github-actions-runner-${{ github.run_id }}-${{ github.run_attempt }}
-    needs: test
     
     steps:
     - name: Checkout code

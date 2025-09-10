@@ -12,13 +12,11 @@ This site was created as an experiment in using AI in my development workflow. A
 - Modern Web Design: Responsive design with beautiful animations and typography
 - SEO Optimized: Proper meta tags, sitemap, and structured content
 - Automated Deployment: GitHub Actions for automatic deployment to AWS S3 and CloudFront
-- Comprehensive Testing: Cypress-based end-to-end testing with CI/CD integration
 - Security: Proper secret management and environment variables
 
 ## Prerequisites
 
 - Python 3.11+
-- Node.js 16+ (for testing suite)
 - AWS Account with S3 bucket and CloudFront distribution
 - OpenAI API key
 
@@ -57,10 +55,6 @@ WEBSITE_URL=https://fairytales4kids.com
 # Python dependencies
 pip install -r requirements.txt
 
-# Testing suite dependencies
-cd testing-suite
-npm install
-cd ..
 ```
 
 ## Project Structure
@@ -88,12 +82,6 @@ Fairytales/
 ├── public/                # Public assets
 │   ├── robots.txt         # Search engine instructions
 │   └── sitemap.xml        # Generated sitemap
-├── testing-suite/         # Cypress testing suite
-│   ├── cypress/           # Test files
-│   ├── package.json       # Node.js dependencies
-│   └── cypress.config.js  # Cypress configuration
-├── .github/workflows/     # GitHub Actions workflows
-│   └── test-and-deploy.yml # Single workflow for testing and deployment
 ├── config.py              # Configuration management
 ├── requirements.txt       # Python dependencies
 ├── setup.py              # Automated setup script
@@ -163,7 +151,7 @@ python enhance_page.py
 8. Repository URL: `https://github.com/your-username/fairytales4kids`
 9. Webhook event filter:
    - Event type: `WORKFLOW_JOB_QUEUED`
-   - Filter: `workflow name` = `Test and Deploy` (or your workflow name)
+   - Filter: `workflow name` = `Deploy` (or your workflow name)
 10. Environment:
     - Provisioning Model: `On-demand`
     - Image: `aws/codebuild/standard:7.0`
