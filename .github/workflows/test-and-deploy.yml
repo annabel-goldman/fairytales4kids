@@ -10,7 +10,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: codebuild-fairytales-github-actions-runner-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
