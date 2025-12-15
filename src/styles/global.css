@@ -1,0 +1,31 @@
+:root {
+    --primary: #4A2B4F;  /* Deep purple */
+    --secondary: #2C1810;  /* Dark brown */
+    --accent: #1B4D3E;  /* Forest green */
+    --background: #F5F0E6;  /* Warm cream */
+    --text: #2C1810;  /* Dark brown */
+    --light-text: #F5F0E6;  /* Warm cream */
+    --card-bg: #FFFFFF;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --magic-glow: rgba(74, 43, 79, 0.3);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Playfair Display', serif;
+    background-color: var(--background);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
+}
+

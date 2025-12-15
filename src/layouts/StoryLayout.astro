@@ -1,0 +1,40 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import '../styles/story.css';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords: string;
+  image: string;
+  imageAlt: string;
+}
+
+const { title, description, keywords, image, imageAlt } = Astro.props;
+---
+
+<BaseLayout 
+  title={title}
+  description={description}
+  keywords={keywords}
+  ogImage={image}
+  ogType="article"
+>
+  <header>
+    <a class="back-button" href="/stories">Back to Stories</a>
+    <div class="header-content">
+      <img alt={imageAlt} class="title-image" src={image} />
+      <h1>{title}</h1>
+    </div>
+  </header>
+  
+  <main>
+    <article>
+      <slot />
+    </article>
+  </main>
+  
+  <footer>
+    &copy; 2024 Fairytales 4 Kids. All rights reserved. Made with ❤️ for young readers everywhere.
+  </footer>
+</BaseLayout>

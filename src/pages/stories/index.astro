@@ -1,0 +1,28 @@
+---
+import StoriesLayout from '../../layouts/StoriesLayout.astro';
+import { getCollection } from 'astro:content';
+
+const stories = await getCollection('stories');
+
+// Sort stories alphabetically by title
+stories.sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<StoriesLayout>
+  <div class="stories-grid">
+    {stories.map((story) => (
+      <a class="story-card" href={`/stories/${story.slug}`}>
+        <img 
+          alt={story.data.imageAlt} 
+          class="story-card-image" 
+          src={story.data.image}
+          loading="lazy"
+        />
+        <div class="story-card-content">
+          <h2>{story.data.title}</h2>
+        </div>
+      </a>
+    ))}
+  </div>
+</StoriesLayout>
+

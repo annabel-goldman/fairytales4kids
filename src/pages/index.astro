@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/styles.css';
+import '../styles/home.css';
+---
+
+<BaseLayout title="Fairytales 4 Kids">
+  <div class="forest-container">
+    <div class="forest-overlay"></div>
+    <div class="welcome-content">
+      <h1>Welcome to Fairytales 4 Kids</h1>
+      <p class="subtitle">Where magical stories come to life</p>
+      <div class="entrance-path">
+        <a href="/stories" class="enter-button">Read a Good Story</a>
+      </div>
+    </div>
+    <div class="forest-elements">
+      <div class="tree tree-left"></div>
+      <div class="tree tree-right"></div>
+      <div class="moon"></div>
+      <div class="stars"></div>
+    </div>
+  </div>
+</BaseLayout>

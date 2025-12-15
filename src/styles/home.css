@@ -1,0 +1,158 @@
+.forest-container {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #1a1a2e, #16213e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.forest-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.3"/></svg>') repeat;
+    opacity: 0.3;
+    animation: twinkle 4s infinite;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--light-text);
+    padding: 2rem;
+    max-width: 800px;
+}
+
+.welcome-content h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    animation: glow 2s infinite alternate;
+}
+
+.subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+    color: var(--light-text);
+}
+
+.entrance-path {
+    margin-top: 2rem;
+}
+
+.enter-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--light-text);
+    text-decoration: none;
+    border-radius: 30px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(74, 43, 79, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.enter-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(74, 43, 79, 0.8);
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+}
+
+.tree {
+    position: absolute;
+    bottom: 0;
+    width: 200px;
+    height: 400px;
+    background: linear-gradient(90deg, var(--secondary), #1a1a1a);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.tree-left {
+    left: -50px;
+    transform: scaleX(-1);
+}
+
+.tree-right {
+    right: -50px;
+}
+
+.moon {
+    position: absolute;
+    top: 50px;
+    right: 100px;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle at 30% 30%, #f5f0e6, #d4c9a8);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(245, 240, 230, 0.5);
+    animation: float 6s infinite ease-in-out;
+}
+
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.3"/></svg>') repeat;
+    animation: twinkle 4s infinite;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .tree {
+        width: 150px;
+        height: 300px;
+    }
+    
+    .moon {
+        width: 70px;
+        height: 70px;
+        right: 50px;
+    }
+}

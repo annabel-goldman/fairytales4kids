@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  ogImage?: string;
+  ogType?: string;
+  ogUrl?: string;
+}
+
+const { 
+  title, 
+  description = "Classic fairy tales for children - perfect for bedtime reading",
+  keywords = "fairytales, children's stories, bedtime stories, kids stories",
+  ogImage = "/images/logo.png",
+  ogType = "website",
+  ogUrl = Astro.url.href
+} = Astro.props;
+
+const siteTitle = title === "Fairytales 4 Kids" ? title : `${title} - Fairytales 4 Kids`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <meta name="keywords" content={keywords} />
+  <meta name="author" content="Fairytales 4 Kids" />
+  <meta name="robots" content="index, follow" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content={siteTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:url" content={ogUrl} />
+  <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={siteTitle} />
+  <meta name="twitter:description" content={description} />
+  
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <title>{siteTitle}</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
+  
+  <slot name="head" />
+</head>
+<body>
+  <slot />
+</body>
+</html>
